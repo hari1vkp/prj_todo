@@ -8,7 +8,7 @@ from app.Models.Todos import Todo
 from app.Models.user import user
 from app.auth import create_access_token, hashpass,verify_pass,create_refresh_token, verify_token
 from app.Router import todo,user,auth
-from app.Schemas.Token import user as userc,userlogin,userreturn,Refreshtoken
+from app.Schemas.Token import UserCreate as userc,UserLogin,UserReturn as userreturn
 app=FastAPI()
 
 base.metadata.create_all(bind=sessionlocal().bind)
