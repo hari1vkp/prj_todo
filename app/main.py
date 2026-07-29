@@ -13,6 +13,7 @@ app=FastAPI()
 
 base.metadata.create_all(bind=sessionlocal().bind)
 app.include_router(todo.router)
+app.include_router(auth.router)
 
 
 
@@ -38,40 +39,3 @@ def deluser(id:int,db:session=Depends(get_db),current_user=Depends(get_current_u
 
 
 
-@app.post("/register" ,response_model=userreturn)
-def reg_user(userc:userc, db:session=Depends(get_db)):
-    existing_user=db.query(user).filter(userc.email==user.email).first()
-    if existing_user:
-        raise HTTPException(status_code=400 ,detail="user already exist")
-    newuser=user(name=userc.name,email=userc.email,password=hashpass(userc.password))
-    db.add(newuser)
-    db.commit()
-    db.refresh(newuser)
-    return newuser
-
-
-@app.post("/login")
-def login(userlogin:userlogin,db:session=Depends(get_db)):
-    existing_user=db.query(user).filter(userlogin.email==user.email).first()
-
-    if existing_user is None:
-        raise HTTPException(status_code=404,detail="user not found")
-    if not verify_pass(userlogin.password,existing_user.password):
-        raise HTTPException(status_code=400, detail="invalid credentials")
-    
-    token=create_access_token(userlogin.email)
-    refresh_token=create_refresh_token(userlogin.email)
-    return {"acess_token":token,"refresh_token":refresh_token,"tokentype":"bearer"}
-
-@app.post("/refresh")
-def refresh(ref:Refreshtoken):
-
-    payload=verify_token(ref.refreshtoken,t_type="refresh")
-    email=payload.get("email")
-    if email is None:
-        raise HTTPException(status_code=400,detail="invalid user")
-    newacess=create_access_token(email)
-    new_refreshtoken=create_refresh_token(email)
-    return{"acess_token":newacess,
-            "refresh_token":new_refreshtoken,
-            "token_type":"bearer"}
