@@ -1,19 +1,18 @@
 
 from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy.orm import session
-
-from database import base,sessionlocal
-from connection import get_db
-from depndencies import get_current_user
-from Models.Todos import todos
-from Models.user import user
-from Models.user import userlogin, userreturn,user as userc,Todo as Todocreate,Todoreturn,Refreshtoken
-from auth import create_access_token, hashpass,verify_pass,create_refresh_token, verify_token
-
+from app.database import base,sessionlocal
+from app.connection import get_db
+from app.depndencies import get_current_user
+from app.Models.Todos import Todo
+from app.Models.user import user
+from app.auth import create_access_token, hashpass,verify_pass,create_refresh_token, verify_token
+from app.Router import todo,user,auth
+from app.Schemas.Token import user as userc,userlogin,userreturn,Refreshtoken
 app=FastAPI()
 
 base.metadata.create_all(bind=sessionlocal().bind)
-
+app.include_router(todo.router)
 
 
 
@@ -37,40 +36,7 @@ def deluser(id:int,db:session=Depends(get_db),current_user=Depends(get_current_u
     db.commit()
     return{"message":"deleted sucessfully"}
 
-@app.get("/todos",response_model=list[Todoreturn])
-def gettodos(db:session=Depends(get_db),current_user=Depends(get_current_user)):
-    return db.query(Todo).filter(current_user.id==Todo.user_id).all()
 
-@app.get(f"/todo/{id}")
-def getbyid(id:int,db:session=Depends(get_db),currentuser=Depends(get_current_user)):
-    singletodo=db.query(Todo).filter(id==Todo.id,Todo.user_id==currentuser.id).first()
-    return singletodo
-
-@app.post("/todo",response_model=Todoreturn)
-def createdodo(Todocreate:Todocreate ,usertable:session=Depends(get_db),current_user=Depends(get_current_user)):
-    todoadd=Todo(**Todocreate.model_dump(),user_id=current_user.id)
-    db.add(todoadd)
-    db.commit()
-    db.refresh(todoadd)
-    return todoadd
-
-@app.put(f"/todo/{id}",response_model=Todoreturn)
-def altertodo(id:int,updated:Todocreate,db:session=Depends(get_db),current_user=Depends(get_current_user)):
-      singletodo=db.query(Todo).filter(id==Todo.id,Todo.user_id==current_user.id).first()
-      if not singletodo:
-        raise HTTPException(status_code=404,detail="todo not found")
-      for key,value in updated.model_dump().items():
-        setattr(singletodo,key,value)
-      db.commit()
-      db.refresh(singletodo)
-      return singletodo
-
-@app.delete(f"/todo/{id}")
-def deletetodo(id:int,db:session=Depends(get_db),current_user=Depends(get_current_user)):
-     singletodo=db.query(Todo).filter(id==Todo.id,Todo.user_id==current_user.id).first()
-     db.delete(singletodo)
-     db.commit()
-     return{"message":f"deleted {id}"}
 
 @app.post("/register" ,response_model=userreturn)
 def reg_user(userc:userc, db:session=Depends(get_db)):

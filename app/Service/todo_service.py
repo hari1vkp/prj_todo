@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from Models.Todos import Todo
-from Schemas.todo import Todoc
+from app.Models.Todos import Todo
+
 
 class Todoservice:
     def __init__(self,db:Session):

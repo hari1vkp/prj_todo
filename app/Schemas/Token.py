@@ -1,22 +1,29 @@
+
 from pydantic import BaseModel
 
-class Refreshtoken(BaseModel):
-    refreshtoken:str
+class UserCreate(BaseModel):
 
-
-class base(BaseModel):
     name: str
     email: str
     password: str
-    
-class user(base):
-    pass
 
+class UserLogin(BaseModel):
 
-class userlogin(BaseModel):
     email: str
     password: str
 
+class UserReturn(BaseModel):
 
-class userreturn(base):
     id: int
+    name: str
+    email: str
+
+class TokenResponse(BaseModel):
+
+    access_token: str
+    refresh_token: str
+    token_type: str
+
+class RefreshRequest(BaseModel):
+
+    refresh_token: str
