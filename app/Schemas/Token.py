@@ -1,12 +1,14 @@
 from pydantic import BaseModel
 
+class Refreshtoken(BaseModel):
+    refreshtoken:str
+
 
 class base(BaseModel):
     name: str
     email: str
     password: str
-
-
+    
 class user(base):
     pass
 
@@ -17,13 +19,4 @@ class userlogin(BaseModel):
 
 
 class userreturn(base):
-    id: int
-
-
-class Todo(BaseModel):
-    task: str
-    desc: str
-
-
-class Todoreturn(Todo):
     id: int
