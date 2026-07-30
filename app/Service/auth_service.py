@@ -1,7 +1,11 @@
 import email
 from pydantic import HttpUrl
 from app.Models.user import user
+<<<<<<< Updated upstream
 from app.Schemas.Token import UserCreate,UserLogin,UserReturn,RefreshRequest,TokenResponse
+=======
+from app.Schemas.auth import UserCreate,UserLogin,UserReturn,RefreshRequest,TokenResponse
+>>>>>>> Stashed changes
 from app.auth import create_access_token,create_refresh_token,verify_pass,verify_token,hashpass
 from fastapi import HTTPException
 from sqlalchemy.orm import Session, session
@@ -35,7 +39,11 @@ class Authservices:
         }
 
     def refresh(self,ref:str):
+<<<<<<< Updated upstream
         payload=verify_token(ref,token="refresh")
+=======
+        payload=verify_token(ref,t_type="refresh")
+>>>>>>> Stashed changes
         email=payload.get("email")
         existing_usr=self.db.query(user).filter(user.email==email).first()
         if  existing_usr is None:
