@@ -1,11 +1,7 @@
 from fastapi import APIRouter,HTTPException,Depends
 
 from app.connection import get_db
-<<<<<<< Updated upstream
-from app.Schemas.Token import UserLogin,UserCreate,TokenResponse,RefreshRequest
-=======
 from app.Schemas.auth import UserLogin,UserCreate,TokenResponse,RefreshRequest
->>>>>>> Stashed changes
 from sqlalchemy.orm import Session
 from app.Service.auth_service import Authservices
 
