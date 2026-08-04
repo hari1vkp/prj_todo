@@ -1,8 +1,8 @@
 from fastapi import HTTPException,APIRouter,Depends
 from sqlalchemy.orm import Session
 
-from app.depndencies import get_current_user
-from app.connection import get_db
+from app.dependencies.depndencies import get_current_user
+from app.dependencies.connection import get_db
 from app.Schemas.todo import Todo as Todocreate,Todoreturn
 from app.Models.Todos import Todo
 from app.Service.todo_service import Todoservice
@@ -22,10 +22,10 @@ def get_byid(todoid:int,db:Session=Depends(get_db),currentusr=Depends(get_curren
 @router.post("/",response_model=Todocreate)
 def create_todo(todo:Todocreate,db:Session=Depends(get_db),currntusr=Depends(get_current_user)):
     services=Todoservice(db)
-    return services.create_todo(todo.task,todo.desc,get_current_user.id)
+    return services.create_todo(todo.task,todo.desc,currntusr.id)
 
 @router.put(f"/{id}",response_model=Todocreate)
-def update_todo(todo:Todocreate,tid:int,db:Session=Depends(get_db),currnt=Depends(get_current_user)):
+def update_todo(todo:Todocreate,id:int,db:Session=Depends(get_db),currnt=Depends(get_current_user)):
     sevices=Todoservice(db)
     updated=sevices.update_todo(todo.task,todo.desc,id,currnt.id)
     return updated

@@ -19,8 +19,8 @@ class Todoservice:
             return gettodo
         raise HTTPException(status_code=404,detail="todonotfound")
 
-    def create_todo(self,task:str,desc:str,user_id:int):
-            todoadd=Todo(task=task,desc=desc,user_id=user_id)
+    def create_todo(self,tasks:str,desc:str,user_id:int):
+            todoadd=Todo(task=tasks,desc=desc,user_id=user_id)
             self.db.add(todoadd)
             self.db.commit()
             self.db.refresh(todoadd)

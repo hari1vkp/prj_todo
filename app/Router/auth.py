@@ -1,6 +1,6 @@
 from fastapi import APIRouter,HTTPException,Depends
 
-from app.connection import get_db
+from app.dependencies.connection import get_db
 from app.Schemas.auth import UserLogin,UserCreate,TokenResponse,RefreshRequest
 from sqlalchemy.orm import Session
 from app.Service.auth_service import Authservices

@@ -21,9 +21,9 @@ class Authservices:
     def login(self,email:str,password:str):
         existing_usr=self.db.query(user).filter(user.email==email).first()
         if existing_usr is None:
-            raise HTTPException(status_code=401, detail="inavaid user")
+            raise HTTPException(status_code=401, detail="inavaid user and password")
         if not verify_pass(password,existing_usr.password):
-            raise HTTPException(status_code=401,detail="invalid password")
+            raise HTTPException(status_code=401,detail="invalid user and password")
         acesstoken=create_access_token(email)
         refreshtoken=create_refresh_token(email)
         return {

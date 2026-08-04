@@ -2,22 +2,31 @@
 from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy.orm import session
 from app.database import base,sessionlocal
-from app.connection import get_db
-from app.depndencies import get_current_user
+from app.dependencies.connection import get_db
+from app.dependencies.depndencies import get_current_user
 from app.Models.Todos import Todo
 from app.Models.user import user
 from app.auth import create_access_token, hashpass,verify_pass,create_refresh_token, verify_token
+from fastapi.middleware.cors import CORSMiddleware
+from app.Middleware.Ratelimmiting import ratelimit
 from app.Router import todo,user,auth
-<<<<<<< Updated upstream
-from app.Schemas.Token import UserCreate as userc,UserLogin,UserReturn as userreturn
-=======
 from app.Schemas.auth import UserCreate as userc,UserLogin,UserReturn as userreturn
->>>>>>> Stashed changes
 app=FastAPI()
 
 base.metadata.create_all(bind=sessionlocal().bind)
+app.add_middleware(CORSMiddleware,
+                    allow_origins=["*"],
+                    allow_credentials=True,
+                    allow_methods=["*"],
+                    allow_headers=["*"]          
+                    )
+app.add_middleware(ratelimit,maxreq=6,sec=60)
+
+
 app.include_router(todo.router)
 app.include_router(auth.router)
+
+
 
 
 
